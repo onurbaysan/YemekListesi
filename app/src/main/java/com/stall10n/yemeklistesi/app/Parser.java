@@ -3,14 +3,10 @@ package com.stall10n.yemeklistesi.app;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.os.Message;
 import android.util.Log;
-import android.widget.ProgressBar;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
@@ -21,12 +17,8 @@ import java.io.ObjectOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.zip.CRC32;
-import java.util.zip.Checksum;
 
 /**
  * Created by onur on 31.5.2014.
@@ -61,6 +53,11 @@ public class Parser {
             menu.setDay(day.toString());
             menu.setStandard_menu(normal);
             menu.setDiet_menu(diet);
+
+            if(day == Days.Cuma)
+            {
+                menu.setHash(Parser.MD5(normal));
+            }
 
         }
         catch (Exception f)
@@ -163,6 +160,21 @@ public class Parser {
     }
 }
 
+class CheckerTask extends AsyncTask<Days, Void, Boolean>
+{
+    public Boolean doInBackground(Days... params)
+    {
+        DailyMenu menu = Parser.ParseDailyMenu(params[0]);
+        String actualHash = "";
+        String storedHash = Parser.menuList.get(5).getHash();
+
+        if(menu != null)
+            actualHash = menu.getHash();
+
+        return !actualHash.equals(storedHash);
+
+    }
+}
 
 class ParserTask extends AsyncTask<Days, Void, ArrayList<DailyMenu>> {
 

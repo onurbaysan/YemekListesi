@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.stall10n.yemeklistesi.app.MainActivity">
 
+
     <android.support.v4.view.PagerTitleStrip
         android:id="@+id/titleStrip"
         android:layout_width="wrap_content"

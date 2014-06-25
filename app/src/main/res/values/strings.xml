@@ -2,18 +2,22 @@
 <resources>
 
     <string name="app_name">Yemek Listesi</string>
-    <string name="title_section1">Pazartesi</string>
-    <string name="title_section2">Salı</string>
-    <string name="title_section3">Çarşamba</string>
-    <string name="title_section4">Perşembe</string>
-    <string name="title_section5">Cuma</string>
-    <string name="title_section6">Cumartesi</string>
-    <string name="title_section7">Pazar</string>
-    <string name="normal_menu">Standart Menü</string>
-    <string name="diet_menu">Diyet Menü</string>
-    <string name="progressText">Menü okunuyor...</string>
-    <string name="action_refresh">Senkronize Et</string>
-    <string name="action_about">Hakkında</string>
-
-
+    <string name="title_section1">Monday</string>
+    <string name="title_section2">Tuesday</string>
+    <string name="title_section3">Wednesday</string>
+    <string name="title_section4">Thursday</string>
+    <string name="title_section5">Friday</string>
+    <string name="title_section6">Saturday</string>
+    <string name="title_section7">Sunday</string>
+    <string name="normal_menu">Standard Menu</string>
+    <string name="diet_menu">Diet Menu</string>
+    <string name="progressText">Fetching menu...</string>
+    <string name="action_refresh">Synchronize</string>
+    <string name="action_about">About</string>
+    <string name="menu_deprecated">Menu is deprecated.</string>
+    <string name="update">Update</string>
+    <string name="ok">OK</string>
+    <string name="check_connection">Check your internet connection\n and try again.</string>
+    <string name="about"><Data><![CDATA[It\'s a side project. <br>To give a feedback please visit<br>
+        <a href=\"https://github.com/stall10n/YemekListesi/issues\">https://github.com/stall10n/YemekListesi/issues</a>]]></Data></string>
 </resources>

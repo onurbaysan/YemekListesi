@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Yemek Listesi</string>
+    <string name="title_section1">Pazartesi</string>
+    <string name="title_section2">Salı</string>
+    <string name="title_section3">Çarşamba</string>
+    <string name="title_section4">Perşembe</string>
+    <string name="title_section5">Cuma</string>
+    <string name="title_section6">Cumartesi</string>
+    <string name="title_section7">Pazar</string>
+    <string name="normal_menu">Standart Menü</string>
+    <string name="diet_menu">Diyet Menü</string>
+    <string name="progressText">Menü okunuyor...</string>
+    <string name="action_refresh">Senkronize Et</string>
+    <string name="action_about">Hakkında</string>
+    <string name="menu_deprecated">Menü eski kalmış.</string>
+    <string name="update">Güncelle</string>
+    <string name="ok">Tamam</string>
+    <string name="check_connection">Lütfen internet bağlantınızı\n kontrol ediniz ve tekrar deneyiniz.</string>
+    <string name="about"><Data><![CDATA[Hobi amaçlı geliştirilmiştir. Geri bildirimlerinizi<br>
+        <a href=\"https://github.com/stall10n/YemekListesi/issues\">https://github.com/stall10n/YemekListesi/issues</a>
+        <br>üzerinden yapabilirsiniz.]]></Data></string>
+
+</resources>

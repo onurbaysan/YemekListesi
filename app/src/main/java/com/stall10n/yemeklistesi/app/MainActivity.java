@@ -1,17 +1,5 @@
 package com.stall10n.yemeklistesi.app;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.ExecutionException;
-
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -22,27 +10,28 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.PagerTitleStrip;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.os.Bundle;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
-import android.util.Log;
+import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -70,6 +59,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         android.app.ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffbe0009")));
 
@@ -88,12 +78,28 @@ public class MainActivity extends ActionBarActivity {
         titleStrip.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
 
         ReadMenus();
+
+        if(hasMenuChanged() == true)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.menu_deprecated)
+                    .setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            File dir = new File(getFilesDir() + "/weeks/");
+                            Utils.DeleteAllFilesInDirectory(dir);
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            builder.create();
+            builder.show();
+
+        }
+
     }
 
 
 
-    public void ReadMenus()
-    {
+    public void ReadMenus() {
         Calendar c = new GregorianCalendar();
         int week = c.get(Calendar.WEEK_OF_YEAR);
         File dir = new File(this.getFilesDir() + "/weeks/");
@@ -102,8 +108,8 @@ public class MainActivity extends ActionBarActivity {
         if (!file.exists()) {
             if (!isConnected()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Lütfen internet bağlantınızı" + newline + "kontrol ediniz ve tekrar deneyiniz.")
-                        .setPositiveButton("Tamam", new DialogInterface.OnClickListener() {
+                builder.setMessage(R.string.check_connection)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 MainActivity.this.finish();
                             }
@@ -115,13 +121,13 @@ public class MainActivity extends ActionBarActivity {
             }
         }
 
-        if(!dir.exists())
+        if (!dir.exists())
             dir.mkdirs();
 
 
         final ProgressDialog progress = new ProgressDialog(this);
         progress.setMessage(getString(R.string.progressText));
-        Parser.initializeList(file,progress);
+        Parser.initializeList(file, progress);
         SelectWeekOfDayTab();
 
         /*
@@ -135,6 +141,27 @@ public class MainActivity extends ActionBarActivity {
         }, 1000);
     }
 
+
+
+    public Boolean hasMenuChanged()
+    {
+        if(isConnected())
+        {
+            CheckerTask ck = new CheckerTask();
+            Boolean shouldUpdate = null;
+
+            try {
+                shouldUpdate = ck.execute(Days.Cuma).get();
+                return shouldUpdate;
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+        return false;
+    }
 
     public boolean isConnected()
     {
@@ -158,12 +185,15 @@ public class MainActivity extends ActionBarActivity {
         // around a pressed color state bug.
         TextView textView = (TextView) messageView.findViewById(R.id.about_credits);
         int defaultColor = textView.getTextColors().getDefaultColor();
-        textView.setTextColor(defaultColor);
+        //textView.setTextColor(defaultColor);
+        textView.setAutoLinkMask(RESULT_OK);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setIcon(R.drawable.ic_launcher);
-        builder.setTitle(R.string.app_name);
-        builder.setMessage("test leeennn");
+        builder.setTitle(R.string.action_about);
+
+        builder.setMessage(Html.fromHtml(getString(R.string.about)));
+
         builder.setPositiveButton("OK",
                 new DialogInterface.OnClickListener() {
 
@@ -172,13 +202,15 @@ public class MainActivity extends ActionBarActivity {
                                         int which) {
                         dialog.cancel();
                     }
-                });
+                }
+        );
 
         builder.setView(messageView);
         builder.create();
         builder.show();
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         
@@ -202,6 +234,9 @@ public class MainActivity extends ActionBarActivity {
             Utils.DeleteAllFilesInDirectory(new File(this.getFilesDir() + "/weeks/"));
             ReadMenus();
         }
+        if(id == R.id.deprecatedMenu)
+            return true;
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -300,9 +335,9 @@ public class MainActivity extends ActionBarActivity {
                 currentDay = Parser.menuList.get(selected-1);
 
                 StringBuilder sb = new StringBuilder();
-                sb.append("<big><p><b><font color='red'><u>Standart</u>: </font></b><br>");
+                sb.append("<big><p><b><font color='red'><u>" + getString(R.string.normal_menu) + "</u>: </font></b><br>");
                 sb.append(currentDay.getStandard_menu().replace(",","<br>"));
-                sb.append("<br><br><b><font color='red'><u>Diyet</u>: </font></b><br>");
+                sb.append("<br><br><b><font color='red'><u>" + getString(R.string.diet_menu) + "</u>: </font></b><br>");
                 sb.append(currentDay.getDiet_menu().replace(",","<br>") + "</p></big>");
                 data = sb.toString();
 

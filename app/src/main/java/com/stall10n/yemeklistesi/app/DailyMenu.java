@@ -12,7 +12,7 @@ public class DailyMenu implements Serializable
     private String standard_menu;
     private String diet_menu;
 
-    private String hash;
+    private String hash = "";
 
     public String getDay() {
         return day;
